@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using myFirstSchoolProject.Data;
+using Microsoft.EntityFrameworkCore;
 using myFirstSchoolProject.DTOs.Admin;
 using myFirstSchoolProject.Models;
 
@@ -27,7 +28,7 @@ namespace myFirstSchoolProject.Controllers
 
         [HttpPost("create-teacher")]
         public async Task<IActionResult> CreateTeacher(
-            [FromBody] CreateTeacherDto model)   // 🔥 FIX
+            [FromBody] CreateTeacherDto model)
         {
             var user = new ApplicationUser
             {
@@ -56,7 +57,7 @@ namespace myFirstSchoolProject.Controllers
 
         [HttpPost("create-student")]
         public async Task<IActionResult> CreateStudent(
-            [FromBody] CreateStudentDto model)   // 🔥 FIX
+            [FromBody] CreateStudentDto model)
         {
             var user = new ApplicationUser
             {
@@ -83,13 +84,106 @@ namespace myFirstSchoolProject.Controllers
             return Ok("Student created successfully");
         }
 
-        // Temporary diagnostic endpoint to verify routing without auth
-        [HttpGet("ping")]
-        [AllowAnonymous]
-        public IActionResult Ping()
+        [HttpGet("TeachersList")]
+        public async Task<IActionResult> GetTeachersList()
         {
-            return Ok("pong");
+            var teachers = await _context.Teachers
+                .Include(t => t.User)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.UserId,
+                    t.Subject,
+                    User = new
+                    {
+                        t.User.Id,
+                        t.User.UserName,
+                        t.User.Email,
+                        t.User.FullName
+                    }
+                })
+                .ToListAsync();
+
+            return Ok(teachers);
         }
+
+        [HttpGet("studentsList")]
+        public async Task<IActionResult> GetStudentsList()
+        {
+            var students = await _context.Students
+                .Include(s => s.User)
+                .Select(s => new
+                {
+                    s.Id,
+                    s.UserId,
+                    s.Class,
+                    User = new
+                    {
+                        s.User.Id,
+                        s.User.UserName,
+                        s.User.Email,
+                        s.User.FullName
+                    }
+                })
+                .ToListAsync();
+
+            return Ok(students);
+        }
+
+        [HttpGet("teacher/{id}")]
+        public async Task<IActionResult> GetTeacherProfile([FromRoute] int id)
+        {
+            var teacher = await _context.Teachers
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (teacher == null)
+                return NotFound("Teacher not found");
+
+            var result = new
+            {
+                teacher.Id,
+                teacher.UserId,
+                Subject = teacher.Subject,
+                User = new
+                {
+                    teacher.User?.Id,
+                    teacher.User?.UserName,
+                    teacher.User?.Email,
+                    teacher.User?.FullName
+                }
+            };
+
+            return Ok(result);
+        }
+
+        [HttpGet("student/{id}")]
+        public async Task<IActionResult> GetStudentProfile([FromRoute] int id)
+        {
+            var student = await _context.Students
+                .Include(s => s.User)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (student == null)
+                return NotFound("Student not found");
+
+            var result = new
+            {
+                student.Id,
+                student.UserId,
+                student.Class,
+                User = new
+                {
+                    student.User?.Id,
+                    student.User?.UserName,
+                    student.User?.Email,
+                    student.User?.FullName
+                }
+            };
+
+            return Ok(result);
+        }
+
     }
 
 

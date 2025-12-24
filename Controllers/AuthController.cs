@@ -39,7 +39,8 @@ namespace myFirstSchoolProject.Controllers
 
             return Ok(new
             {
-                token
+                token,
+                roles
             });
         }
     }

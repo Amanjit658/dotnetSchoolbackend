@@ -143,3 +143,4 @@ C:\Users\hp\source\repos\myFirstSchoolProject\bin\Debug\net8.0\myFirstSchoolProj
 C:\Users\hp\source\repos\myFirstSchoolProject\bin\Debug\net8.0\myFirstSchoolProject.pdb
 C:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\myFirstSchoolProject.genruntimeconfig.cache
 C:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\ref\myFirstSchoolProject.dll
+C:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\myFirstSchoolProject.sourcelink.json

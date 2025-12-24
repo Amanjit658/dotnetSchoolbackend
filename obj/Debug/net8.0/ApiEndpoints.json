@@ -1,0 +1,50 @@
+[
+  {
+    "ContainingType": "myFirstSchoolProject.Controllers.AdminController",
+    "Method": "CreateStudent",
+    "RelativePath": "api/Admin/create-student",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "myFirstSchoolProject.DTOs.Admin.CreateStudentDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "myFirstSchoolProject.Controllers.AdminController",
+    "Method": "CreateTeacher",
+    "RelativePath": "api/Admin/create-teacher",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "myFirstSchoolProject.DTOs.Admin.CreateTeacherDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "myFirstSchoolProject.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/Auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "myFirstSchoolProject.DTOs.Auth.LoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

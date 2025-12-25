@@ -184,6 +184,50 @@ namespace myFirstSchoolProject.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("delete-teacher/{id}")]
+        public async Task<IActionResult> DeleteTeacher([FromRoute] int id)
+        {
+            var teacher = await _context.Teachers
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (teacher == null)
+                return NotFound("Teacher not found");
+
+            var user = teacher.User;
+
+            _context.Teachers.Remove(teacher);
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok("Teacher deleted successfully");
+        }
+
+        [HttpDelete("delete-student/{id}")]
+        public async Task<IActionResult> DeleteStudent([FromRoute] int id)
+        {
+            var student = await _context.Students
+                .Include(s => s.User)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            Console.WriteLine("here", student);
+            if (student == null)
+                return NotFound("Student not found");
+
+            var user = student.User;
+
+            _context.Students.Remove(student);
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+            await _context.SaveChangesAsync();
+
+            return Ok("Student deleted successfully");
+        }
+
     }
 
 

@@ -47,6 +47,16 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+// CORS - allow external callers (adjust origins for production)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -82,9 +92,15 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// When exposing via Cloudflare Tunnel / reverse proxy the app may receive
+// HTTPS at the proxy while seeing HTTP locally. If you run into redirect
+// loops, you can remove or conditionally disable `UseHttpsRedirection()`.
 app.UseHttpsRedirection();
 
 app.UseRouting();          // ✅ REQUIRED
+
+// Enable CORS for external callers (must be before UseAuthentication/Authorization)
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

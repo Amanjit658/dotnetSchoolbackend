@@ -144,3 +144,7 @@ C:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\refint\myFirstSch
 C:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\myFirstSchoolProject.pdb
 c:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\myFirstSchoolProject.genruntimeconfig.cache
 c:\Users\hp\source\repos\myFirstSchoolProject\obj\Debug\net8.0\ref\myFirstSchoolProject.dll
+C:\Users\hp\source\repos\myFirstSchoolProject\bin\Debug\net8.0\tools\swagger_local.json
+C:\Users\hp\source\repos\myFirstSchoolProject\bin\Debug\net8.0\tools\swagger_public.json
+C:\Users\hp\source\repos\myFirstSchoolProject\bin\Debug\net8.0\tools\swagger_public_latest.json
+C:\Users\hp\source\repos\myFirstSchoolProject\bin\Debug\net8.0\tools\swagger_public_now.json

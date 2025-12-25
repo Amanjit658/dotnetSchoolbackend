@@ -1,0 +1,17 @@
+﻿
+
+openapi    : 3.0.1
+info       : @{title=myFirstSchoolProject; version=1.0}
+paths      : @{/api/Admin/create-teacher=; /api/Admin/create-student=; 
+             /api/Admin/TeachersList=; /api/Admin/studentsList=; 
+             /api/Admin/teacher/{id}=; /api/Admin/student/{id}=; 
+             /api/Admin/delete-teacher/{id}=; 
+             /api/Admin/delete-student/{id}=; 
+             /api/Admin/update-teacher/{id}=; 
+             /api/Admin/update-student/{id}=; /api/Admin/add-class=; 
+             /api/Admin/add-subject=; /api/Auth/login=}
+components : @{schemas=; securitySchemes=}
+security   : {@{Bearer=System.Object[]}}
+
+
+

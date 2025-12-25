@@ -228,8 +228,84 @@ namespace myFirstSchoolProject.Controllers
             return Ok("Student deleted successfully");
         }
 
+        [HttpPut("update-teacher/{id}")]
+        public async Task<IActionResult> UpdateTeacher(
+            [FromRoute] int id,
+            [FromBody] UpdateTeacherDto model)
+        {
+            var teacher = await _context.Teachers
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (teacher == null)
+                return NotFound("Teacher not found");
+
+            teacher.Subject = model.Subject ?? teacher.Subject;
+            if (teacher.User != null)
+            {
+                teacher.User.FullName = model.FullName ?? teacher.User.FullName;
+                teacher.User.Email = model.Email ?? teacher.User.Email;
+                teacher.User.UserName = model.Email ?? teacher.User.UserName;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Teacher updated successfully");
+        }
+
+        [HttpPut("update-student/{id}")]
+
+        public async Task<IActionResult> UpdateStudent(
+            [FromRoute] int id,
+
+            [FromBody] UpdateStudentDto model)
+        {
+            var student = await _context.Students
+                .Include(s => s.User).FirstOrDefaultAsync(s => s.Id == id);
+
+            if (student == null)
+                return NotFound("Student not found");
+
+            student.Class = model.Class ?? student.Class;
+            if (student.User != null)
+            {
+                student.User.FullName = model.FullName ?? student.User.FullName;
+                student.User.Email = model.Email ?? student.User.Email;
+                student.User.UserName = model.Email ?? student.User.UserName;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Student updated successfully");
+        }
+
+        [HttpPost("add-class")]
+        public async Task<IActionResult> AddClass([FromBody] AddClasssDto model)
+        {
+            var newClass = new Class
+            {
+                Name = model.Name
+            };
+
+            _context.Classes.Add(newClass);
+            await _context.SaveChangesAsync();
+
+            return Ok("Class added successfully");
+        }
+
+        [HttpPost("add-subject")]
+        public async Task<IActionResult> AddSubject([FromBody] AddSubjectDto model)
+        {
+            var newSubject = new Subject
+            {
+                Name = model.Name
+            };
+
+            _context.Subjects.Add(newSubject);
+            await _context.SaveChangesAsync();
+
+            return Ok("Subject added successfully");
+        }
     }
-
-
 }
 

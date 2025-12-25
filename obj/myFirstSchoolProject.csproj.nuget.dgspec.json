@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj": {}
+    "C:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj": {}
   },
   "projects": {
-    "c:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj": {
+    "C:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj",
+        "projectUniqueName": "C:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj",
         "projectName": "myFirstSchoolProject",
-        "projectPath": "c:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj",
+        "projectPath": "C:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\myFirstSchoolProject.csproj",
         "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\obj\\",
+        "outputPath": "C:\\Users\\hp\\source\\repos\\myFirstSchoolProject\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

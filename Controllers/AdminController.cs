@@ -306,6 +306,114 @@ namespace myFirstSchoolProject.Controllers
 
             return Ok("Subject added successfully");
         }
+
+        // Assign subject to class
+        [HttpPost("assign")]
+
+        public async Task<IActionResult> AssignSubjectToClass(AssignSubjectToClassDto dto)
+        {
+            var exists = await _context.ClassSubjects
+                          .AnyAsync(cs =>
+                              cs.ClassId == dto.ClassId &&
+                              cs.SubjectId == dto.SubjectId);
+            if (exists)
+                return BadRequest("Subject already assigned to this class");
+            var mapping = new ClassSubject
+            {
+                ClassId = dto.ClassId,
+                SubjectId = dto.SubjectId
+            };
+            _context.ClassSubjects.Add(mapping);
+            await _context.SaveChangesAsync();
+            return Ok("Subject assigned to class");
+
+        }
+
+        // Get subjects of a class
+        [HttpGet("class-subjects/{classId}")]
+        public async Task<IActionResult> GetSubjectsOfClass([FromRoute] int classId)
+        {
+            var subjects = await _context.ClassSubjects
+                .Where(cs => cs.ClassId == classId)
+                .Include(cs => cs.Subject)
+                .Select(cs => new
+                {
+                    cs.Subject.Id,
+                    cs.Subject.Name
+                })
+                .ToListAsync();
+
+            // Print subjects as JSON so console shows readable values when the API is hit
+            try
+            {
+                var subjectsJson = System.Text.Json.JsonSerializer.Serialize(subjects);
+                Console.WriteLine($"[GetSubjectsOfClass] classId={classId} subjects={subjectsJson}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetSubjectsOfClass] classId={classId} - Error serializing subjects: {ex.Message}");
+            }
+
+            return Ok(subjects);
+        }
+
+        [HttpPost("assign-teacher")]
+        public async Task<IActionResult> AssignTeacherToClassSubject([FromBody] AssignTeacherDto dto)
+        {
+            var exists = await _context.TeacherClassSubjects
+                          .AnyAsync(tcs =>
+                              tcs.TeacherId == dto.TeacherId &&
+                              tcs.ClassId == dto.ClassId &&
+                              tcs.SubjectId == dto.SubjectId);
+            if (exists)
+                return BadRequest("Teacher already assigned to this class and subject");
+            var mapping = new TeacherClassSubject
+            {
+                TeacherId = dto.TeacherId,
+                ClassId = dto.ClassId,
+                SubjectId = dto.SubjectId
+            };
+            _context.TeacherClassSubjects.Add(mapping);
+            await _context.SaveChangesAsync();
+            return Ok("Teacher assigned to class and subject");
+
+        }
+
+        [HttpGet("class/{classId}/teachers")]
+        public IActionResult GetTeachersByClass(int classId)
+        {
+            var data = _context.TeacherClassSubjects
+                .Where(x => x.ClassId == classId)
+                .Include(x => x.Teacher)
+                .Include(x => x.Subject)
+                .Select(x => new
+                {
+                    TeacherId = x.Teacher.Id,
+                    TeacherName = x.Teacher.User.FullName,
+                    Subject = x.Subject.Name
+                })
+                .ToList();
+
+            return Ok(data);
+        }
+
+        [HttpGet("teacher/{teacherId}/classes")]
+        public IActionResult GetClassesByTeacher(int teacherId)
+        {
+            var data = _context.TeacherClassSubjects
+                .Where(x => x.TeacherId == teacherId)
+                .Include(x => x.Class)
+                .Include(x => x.Subject)
+                .Select(x => new
+                {
+                    ClassName = x.Class.Name,
+                    Subject = x.Subject.Name
+                })
+                .ToList();
+
+            return Ok(data);
+        }
+
+
     }
 }
-

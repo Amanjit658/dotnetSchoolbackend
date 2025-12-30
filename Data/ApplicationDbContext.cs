@@ -21,6 +21,10 @@ namespace myFirstSchoolProject.Data
 
         public DbSet<Subject> Subjects { get; set; }
 
+        public DbSet<ClassSubject> ClassSubjects { get; set; }
+
+        public DbSet<TeacherClassSubject> TeacherClassSubjects { get; set; }
+
 
     }
 }

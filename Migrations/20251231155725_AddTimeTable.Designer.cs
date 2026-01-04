@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using myFirstSchoolProject.Data;
 
@@ -11,9 +12,11 @@ using myFirstSchoolProject.Data;
 namespace myFirstSchoolProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251231155725_AddTimeTable")]
+    partial class AddTimeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,26 +156,6 @@ namespace myFirstSchoolProject.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.AcademicYear", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Year")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AcademicYears");
                 });
 
             modelBuilder.Entity("myFirstSchoolProject.Models.ApplicationUser", b =>
@@ -320,54 +303,6 @@ namespace myFirstSchoolProject.Migrations
                     b.ToTable("ClassTimetables");
                 });
 
-            modelBuilder.Entity("myFirstSchoolProject.Models.Exam", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AcademicYearId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademicYearId");
-
-                    b.ToTable("Exams");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.ExamSubject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxMarks")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExamId");
-
-                    b.HasIndex("SubjectId");
-
-                    b.ToTable("ExamSubjects");
-                });
-
             modelBuilder.Entity("myFirstSchoolProject.Models.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -388,99 +323,6 @@ namespace myFirstSchoolProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.StudentAttendance", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClassId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsPresent")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassId");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("StudentAttendances");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.StudentClassAllocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AcademicYearId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClassId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AcademicYearId");
-
-                    b.HasIndex("ClassId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentClassAllocations");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.StudentExamResult", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ExamSubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MarksObtained")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExamSubjectId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentExamResults");
                 });
 
             modelBuilder.Entity("myFirstSchoolProject.Models.Subject", b =>
@@ -534,9 +376,6 @@ namespace myFirstSchoolProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AcademicYearId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ClassId")
                         .HasColumnType("int");
 
@@ -547,8 +386,6 @@ namespace myFirstSchoolProject.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AcademicYearId");
 
                     b.HasIndex("ClassId");
 
@@ -656,36 +493,6 @@ namespace myFirstSchoolProject.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("myFirstSchoolProject.Models.Exam", b =>
-                {
-                    b.HasOne("myFirstSchoolProject.Models.AcademicYear", "AcademicYear")
-                        .WithMany()
-                        .HasForeignKey("AcademicYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AcademicYear");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.ExamSubject", b =>
-                {
-                    b.HasOne("myFirstSchoolProject.Models.Exam", "Exam")
-                        .WithMany()
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Subject");
-                });
-
             modelBuilder.Entity("myFirstSchoolProject.Models.Student", b =>
                 {
                     b.HasOne("myFirstSchoolProject.Models.ApplicationUser", "User")
@@ -695,87 +502,6 @@ namespace myFirstSchoolProject.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.StudentAttendance", b =>
-                {
-                    b.HasOne("myFirstSchoolProject.Models.Class", "Class")
-                        .WithMany()
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Class");
-
-                    b.Navigation("Student");
-
-                    b.Navigation("Subject");
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.StudentClassAllocation", b =>
-                {
-                    b.HasOne("myFirstSchoolProject.Models.AcademicYear", "AcademicYear")
-                        .WithMany()
-                        .HasForeignKey("AcademicYearId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Class", "Class")
-                        .WithMany()
-                        .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AcademicYear");
-
-                    b.Navigation("Class");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("myFirstSchoolProject.Models.StudentExamResult", b =>
-                {
-                    b.HasOne("myFirstSchoolProject.Models.ExamSubject", "ExamSubject")
-                        .WithMany()
-                        .HasForeignKey("ExamSubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("myFirstSchoolProject.Models.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ExamSubject");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("myFirstSchoolProject.Models.Teacher", b =>
@@ -791,10 +517,6 @@ namespace myFirstSchoolProject.Migrations
 
             modelBuilder.Entity("myFirstSchoolProject.Models.TeacherClassSubject", b =>
                 {
-                    b.HasOne("myFirstSchoolProject.Models.AcademicYear", "AcademicYear")
-                        .WithMany()
-                        .HasForeignKey("AcademicYearId");
-
                     b.HasOne("myFirstSchoolProject.Models.Class", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
@@ -812,8 +534,6 @@ namespace myFirstSchoolProject.Migrations
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("AcademicYear");
 
                     b.Navigation("Class");
 

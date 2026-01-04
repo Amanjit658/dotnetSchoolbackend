@@ -5,6 +5,7 @@ namespace myFirstSchoolProject.Models
         public int TeacherId { get; set; }
         public int ClassId { get; set; }
         public int SubjectId { get; set; }
+        public int AcademicYearId { get; set; }
     }
 
 }

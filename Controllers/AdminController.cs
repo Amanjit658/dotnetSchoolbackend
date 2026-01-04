@@ -307,6 +307,35 @@ namespace myFirstSchoolProject.Controllers
             return Ok("Subject added successfully");
         }
 
+        [HttpPost("create-academic-year")]
+        public async Task<IActionResult> CreateAcademicYear([FromBody] CreateAcademicYearDto model)
+        {
+            var newAcademicYear = new AcademicYear
+            {
+                Year = model.Year
+            };
+
+            _context.AcademicYears.Add(newAcademicYear);
+            await _context.SaveChangesAsync();
+
+            return Ok("Academic year created successfully");
+        }
+
+        [HttpGet("academic-years")]
+
+        public async Task<IActionResult> GetAcademicYears()
+        {
+            var years = await _context.AcademicYears
+                .Select(ay => new
+                {
+                    ay.Id,
+                    ay.Year
+                })
+                .ToListAsync();
+
+            return Ok(years);
+        }
+
         // Assign subject to class
         [HttpPost("assign")]
 
@@ -364,14 +393,17 @@ namespace myFirstSchoolProject.Controllers
                           .AnyAsync(tcs =>
                               tcs.TeacherId == dto.TeacherId &&
                               tcs.ClassId == dto.ClassId &&
-                              tcs.SubjectId == dto.SubjectId);
+                              tcs.SubjectId == dto.SubjectId &&
+                              tcs.AcademicYearId == dto.AcademicYearId);
             if (exists)
                 return BadRequest("Teacher already assigned to this class and subject");
             var mapping = new TeacherClassSubject
             {
                 TeacherId = dto.TeacherId,
                 ClassId = dto.ClassId,
-                SubjectId = dto.SubjectId
+                SubjectId = dto.SubjectId,
+                AcademicYearId = dto.AcademicYearId
+
             };
             _context.TeacherClassSubjects.Add(mapping);
             await _context.SaveChangesAsync();
@@ -380,10 +412,10 @@ namespace myFirstSchoolProject.Controllers
         }
 
         [HttpGet("class/{classId}/teachers")]
-        public IActionResult GetTeachersByClass(int classId)
+        public IActionResult GetTeachersByClass(int classId, int academicYearId)
         {
             var data = _context.TeacherClassSubjects
-                .Where(x => x.ClassId == classId)
+                .Where(x => x.ClassId == classId && x.AcademicYearId == academicYearId)
                 .Include(x => x.Teacher)
                 .Include(x => x.Subject)
                 .Select(x => new
@@ -412,6 +444,154 @@ namespace myFirstSchoolProject.Controllers
                 .ToList();
 
             return Ok(data);
+        }
+
+        [HttpPost("timetable")]
+
+        public async Task<IActionResult> CreateClassTimetable([FromBody] CreateTimetableDto dto)
+        {
+            // Rule 1: class conflict
+            bool classConflict = _context.ClassTimetables.Any(x =>
+                x.ClassId == dto.ClassId &&
+                x.Day == dto.Day &&
+                x.PeriodNumber == dto.PeriodNumber);
+
+            if (classConflict)
+                return BadRequest("Class already has a subject at this time");
+
+            // Rule 2: teacher conflict
+            bool teacherConflict = _context.ClassTimetables.Any(x =>
+                x.TeacherId == dto.TeacherId &&
+                x.Day == dto.Day &&
+                x.PeriodNumber == dto.PeriodNumber);
+            if (teacherConflict)
+                return BadRequest("Teacher already has a subject at this time");
+
+            var timetableEntry = new ClassTimetable
+            {
+                ClassId = dto.ClassId,
+                SubjectId = dto.SubjectId,
+                TeacherId = dto.TeacherId,
+                Day = dto.Day,
+                PeriodNumber = dto.PeriodNumber
+            };
+
+            _context.ClassTimetables.Add(timetableEntry);
+            await _context.SaveChangesAsync();
+
+            return Ok("Class timetable entry created successfully");
+        }
+
+        [HttpGet("timetable/class/{classId}")]
+
+        public async Task<IActionResult> GetClassTimetable([FromRoute] int classId)
+        {
+            var timetable = await _context.ClassTimetables
+                .Where(ct => ct.ClassId == classId)
+                .Include(ct => ct.Subject)
+                .Include(ct => ct.Teacher)
+                .ThenInclude(t => t.User)
+                .Select(ct => new
+                {
+                    ct.Id,
+                    Subject = ct.Subject.Name,
+                    Teacher = ct.Teacher.User.FullName,
+                    ct.Day,
+                    ct.PeriodNumber
+                })
+                .ToListAsync();
+
+            return Ok(timetable);
+        }
+
+        [HttpPost("StudentClassAllocations")]
+
+        public async Task<IActionResult> AllocateStudentToClass([FromBody] AllocateStudentDto dto)
+        {
+            bool alreadyAllocated = _context.StudentClassAllocations.Any(x =>
+              x.StudentId == dto.StudentId && x.AcademicYearId == dto.AcademicYearId);
+
+            if (alreadyAllocated)
+                return BadRequest("Student already allocated in this academic year");
+
+            var allocation = new StudentClassAllocation
+            {
+                StudentId = dto.StudentId,
+                ClassId = dto.ClassId,
+                AcademicYearId = dto.AcademicYearId
+            };
+
+            _context.StudentClassAllocations.Add(allocation);
+            await _context.SaveChangesAsync();
+
+            return Ok("Student allocated to class successfully");
+        }
+
+        [HttpGet("class/{classId}/students")]
+        public IActionResult GetStudentsByClass(int classId, int academicYearId)
+        {
+            var students = _context.StudentClassAllocations
+                .Where(x => x.ClassId == classId && x.AcademicYearId == academicYearId)
+                .Include(x => x.Student)
+                .ThenInclude(s => s.User)
+                .Select(x => new
+                {
+                    x.Student.Id,
+                    x.Student.User.FullName,
+                    x.Student.User.Email
+                })
+                .ToList();
+
+            return Ok(students);
+        }
+
+        [HttpGet("class/{classId}")]
+        public IActionResult GetClassAttendance(int classId, DateTime date)
+        {
+            var attendanceRecords = _context.StudentAttendances
+                .Where(sa => sa.ClassId == classId && sa.Date.Date == date.Date)
+                .Include(sa => sa.Student)
+                .ThenInclude(s => s.User)
+                .Select(sa => new
+                {
+                    sa.Student.Id,
+                    sa.Student.User.FullName,
+                    sa.IsPresent
+                })
+                .ToList();
+
+            return Ok(attendanceRecords);
+        }
+ 
+        [HttpPost("exam")]
+        public async Task<IActionResult> CreateExam(CreateExamDto dto)
+        {
+            var exam = new Exam
+            {
+                Name = dto.Name,
+                AcademicYearId = dto.AcademicYearId
+            };
+
+            _context.Exams.Add(exam);
+            await _context.SaveChangesAsync();
+
+            return Ok("Exam created");
+        }
+
+        [HttpPost("exam/subject")]
+        public async Task<IActionResult> AddSubjectToExam(AddExamSubjectDto dto)
+        {
+            var examSubject = new ExamSubject
+            {
+                ExamId = dto.ExamId,
+                SubjectId = dto.SubjectId,
+                MaxMarks = dto.MaxMarks
+            };
+
+            _context.ExamSubjects.Add(examSubject);
+            await _context.SaveChangesAsync();
+
+            return Ok("Subject added to exam");
         }
 
 

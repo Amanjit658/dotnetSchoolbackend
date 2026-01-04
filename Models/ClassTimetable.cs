@@ -1,11 +1,8 @@
 namespace myFirstSchoolProject.Models
 {
-    public class TeacherClassSubject
+    public class ClassTimetable
     {
         public int Id { get; set; }
-
-        public int TeacherId { get; set; }
-        public Teacher Teacher { get; set; }
 
         public int ClassId { get; set; }
         public Class Class { get; set; }
@@ -13,7 +10,11 @@ namespace myFirstSchoolProject.Models
         public int SubjectId { get; set; }
         public Subject Subject { get; set; }
 
-        public int? AcademicYearId { get; set; }
-        public AcademicYear? AcademicYear { get; set; }
+        public int TeacherId { get; set; }
+        public Teacher Teacher { get; set; }
+
+        public DayOfWeek Day { get; set; }   // Monday – Friday
+
+        public int PeriodNumber { get; set; }  // 1–8 
     }
 }
